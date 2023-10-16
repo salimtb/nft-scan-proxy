@@ -1,0 +1,21 @@
+version: "3"
+services:
+  # our nginx reverse proxy
+  # with njs activated
+  http:
+    image: nginx:alpine
+    command: nginx -g "daemon off; load_module modules/ngx_http_js_module.so;"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:z
+    environment:
+      - API_KEY=<you_nft_scan_key>
+    ports:
+      - 80:80
+
+  # a backend
+  ghost:
+    image: ghost
+    depends_on:
+      - http
+    environment:
+      url: http://proxy.localhost
